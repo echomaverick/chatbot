@@ -107,7 +107,7 @@ body {
 }
 
 form {
-  width: 100%;
+  width: 95%;
   max-width: 1280px;
   margin: 0 auto;
   padding: 10px;
@@ -116,6 +116,7 @@ form {
   display: flex;
   flex-direction: row;
   gap: 10px;
+  border-radius: 30px;
 }
 
 textarea {
@@ -141,4 +142,12 @@ button {
 form img {
   width: 30px;
   height: 30px;
+}
+
+.info-text {
+  margin-top: 10px;
+  color: #dcdcdc;
+  font-size: 14px;
+  text-align: center;
+  margin-bottom: 7px;
 }
