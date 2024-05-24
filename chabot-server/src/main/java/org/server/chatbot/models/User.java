@@ -2,6 +2,7 @@ package org.server.chatbot.models;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 
+// Model class representing a user entity, mapped to a MongoDB document
 @Document
 public class User {
 

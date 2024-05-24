@@ -18,12 +18,14 @@ public class ChatBotService {
 
 	private static final HashMap<String, String> responses = new HashMap<>();
 
+	// Initialize predefined responses
 	static {
 		responses.put("hello" , "Hi there!");
 		responses.put("how are you" , "I'm a bot, I'm always fine!");
 		responses.put("bye" , "Goodbye!");
 	}
 
+	// Method to get responses based on input
 	public HashMap<String, Object> getResponses(String input) {
 		logger.info("Input received: {}" , input);
 		try {
@@ -36,6 +38,7 @@ public class ChatBotService {
 			if (responses.containsKey(input)) {
 				response.put("answer" , createJsonResponse(responses.get(input)));
 			} else {
+				// Summarizing input if it's not a predefined response
 				String summary = summarizationService.summarize(input);
 				response.put("answer" , formatSummary(summary));
 			}
@@ -50,6 +53,7 @@ public class ChatBotService {
 	}
 
 	private ArrayList<HashMap<String, Object>> createJsonResponse(String answer) {
+		// Creating a JSON response for a given answer
 		ArrayList<HashMap<String, Object>> answerList = new ArrayList<>();
 		HashMap<String, Object> answerMap = new HashMap<>();
 		answerMap.put("content" , answer);
@@ -58,6 +62,7 @@ public class ChatBotService {
 	}
 
 	private ArrayList<HashMap<String, Object>> formatSummary(String summary) {
+		// Formatting a summary for easier reading
 		try {
 			String[] sections = summary.split("\n\n");
 			ArrayList<HashMap<String, Object>> answerList = new ArrayList<>();

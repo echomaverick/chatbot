@@ -39,16 +39,18 @@ public class UserService {
 		return userRepository.save(user);
 	}
 
+	// Method to validate email format using regex
 	private boolean isValidEmail(String email) {
 		String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
 		return Pattern.matches(emailRegex , email);
 	}
 
+	// Method to validate length of name
 	private boolean isValidLength(String value) {
 		return StringUtils.hasText(value) && value.length() >= 2;
 	}
 
-
+	// Method to validate password complexity using regex
 	private boolean isValidPassword(String password) {
 		String passwordRegex = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,}$";
 		return Pattern.matches(passwordRegex , password);

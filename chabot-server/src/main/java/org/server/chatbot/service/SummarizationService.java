@@ -11,7 +11,9 @@ import java.io.IOException;
 
 @Service
 public class SummarizationService {
+	// Method to summarize content using Vertex AI generative models
 	public String summarize(String content) {
+		 // Load environment variables from .env file
 		// @todo Replace these variables with your project and model information found on the Google Cloud Console https://cloud.google.com/
 		Dotenv dotenv = Dotenv.configure().directory("/home/samuel/Documents/GitHub/chatbot/chabot-server/.env").load();
 		String projectId = dotenv.get("PROJECT_ID");
@@ -19,7 +21,9 @@ public class SummarizationService {
 		String modelName = dotenv.get("MODEL_NAME");
 
 		try (VertexAI vertexAI = new VertexAI(projectId , location)) {
+			// Initialize a generative model
 			GenerativeModel model = new GenerativeModel(modelName , vertexAI);
+			// Generate content based on input
 			GenerateContentResponse response = model.generateContent(content);
 			return ResponseHandler.getText(response);
 		} catch (IllegalArgumentException e) {
