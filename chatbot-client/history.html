@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Chat History</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        #chat-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .history-card {
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 300px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .history-card:hover {
+            transform: scale(1.05);
+        }
+
+        .history-card h3 {
+            margin-top: 0;
+            color: #007bff;
+        }
+
+        .bot-message {
+            color: green;
+            margin: 10px 0 0;
+        }
+    </style>
+</head>
+<body>
+<h1 id="history-title">Chat History</h1>
+<div id="chat-container"></div>
+<script src="scripts/getHistoryForUser.js"></script>
+</body>
+</html>
