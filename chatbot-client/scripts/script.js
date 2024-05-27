@@ -2,6 +2,34 @@ import bot from "../assets/bot.svg";
 import user from "../assets/user.svg";
 import axios from "axios";
 
+// Function to check if the user is authenticated
+const isAuthenticated = () => {
+  // Check if token exists in localStorage
+  const token = localStorage.getItem("token");
+  if (token) {
+    try {
+      // Decode token to get expiration time
+      const decodedToken = JSON.parse(atob(token.split(".")[1]));
+      const expirationTime = decodedToken.exp * 1000; // Convert to milliseconds
+
+      if (Date.now() > expirationTime) {
+        // Token has expired, remove token from localStorage
+        localStorage.removeItem("token");
+        return false;
+      } else {
+        // Token is still valid
+        return true;
+      }
+    } catch (error) {
+      console.error("Error decoding token:", error.message);
+      return false;
+    }
+  } else {
+    // Token does not exist
+    return false;
+  }
+};
+
 // Selecting DOM elements
 const form = document.querySelector("form");
 const chatContainer = document.querySelector("#chat_container");
@@ -59,6 +87,13 @@ function chatStripe(isAi, value, uniqueId) {
 // Function to handle form submission
 const handleSubmit = async (e) => {
   e.preventDefault();
+
+  // Check if the user is authenticated
+  if (!isAuthenticated()) {
+    // Redirect the user to the login page
+    window.location.href = "/login.html";
+    return;
+  }
 
   // Getting user input
   const formData = new FormData(form);

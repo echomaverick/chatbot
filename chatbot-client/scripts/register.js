@@ -1,4 +1,8 @@
-import axios from "axios";
+// Check if token exists in localStorage
+const token = localStorage.getItem("token");
+if (token) {
+  window.location.href = "ai.html"; // Redirect to ai.html if token exists
+}
 
 // Function to register a new user
 function registerUser(event) {
@@ -23,7 +27,7 @@ function registerUser(event) {
     .post("http://localhost:8080/api/users/register", userData)
     .then((response) => {
       alert("User registered successfully!");
-      window.location.href = "ai.html";
+      window.location.href = "ai.html"; // Redirect to ai.html after successful registration
     })
     .catch((error) => {
       console.error("Error registering user:", error);

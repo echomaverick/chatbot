@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="./logo.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User Registration</title>
+    <link rel="stylesheet" href="styles/login.css" />
+  </head>
+  <body>
+    <form id="loginForm">
+      <div class="container">
+        <h1>Login</h1>
+        <p>Please fill in this form to login to your account.</p>
+        <hr />
+
+        <label for="username"><b>Username</b></label>
+        <input
+          type="text"
+          placeholder="Enter Username"
+          name="username"
+          id="username"
+          required
+        />
+
+        <label for="password"><b>Password</b></label>
+        <input
+          type="password"
+          placeholder="Enter Password"
+          name="password"
+          id="password"
+          required
+        />
+
+        <button
+          style="
+            background-color: #04aa6d;
+            color: white;
+            padding: 16px 20px;
+            margin: 8px 0;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            opacity: 0.9;
+            border-radius: 20px;
+          "
+          type="submit"
+        >
+          Login
+        </button>
+      </div>
+
+      <div class="container signin">
+        <p>Don't have an account? <a href="index.html">Sign up</a>.</p>
+      </div>
+    </form>
+
+    <script type="module" src="scripts/login.js"></script>
+  </body>
+</html>
