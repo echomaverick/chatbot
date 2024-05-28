@@ -5,11 +5,14 @@ import bot from "../assets/bot.svg";
 import user from "../assets/user.svg";
 import send from "../assets/send.svg";
 import "../styles/ai.css";
+import Box from "@mui/material/Box";
+import Skeleton from "@mui/material/Skeleton";
 
 const AiChat = () => {
   const navigate = useNavigate();
   const [chatMessages, setChatMessages] = useState([]);
   const [userInput, setUserInput] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const chatContainerRef = useRef(null);
 
   useEffect(() => {
@@ -41,6 +44,8 @@ const AiChat = () => {
       return;
     }
 
+    setIsLoading(true);
+
     const message = { content: userInput, isUser: true };
     setChatMessages((prevMessages) => [...prevMessages, message]);
     setUserInput("");
@@ -52,6 +57,8 @@ const AiChat = () => {
       const response = await axios.post("http://localhost:8080/api/ask", {
         question: userInput,
       });
+
+      setIsLoading(false);
 
       clearInterval(loaderInterval);
 
@@ -66,20 +73,27 @@ const AiChat = () => {
 
         setChatMessages((prevMessages) => [...prevMessages, answerMessage]);
 
-        const messageDiv = document.getElementById(uniqueId);
-        await typeText(messageDiv, answerContent.join("\n"), 10);
-
         const username = getUsernameFromToken();
-        await axios.post("http://localhost:8080/api/save-history", {
+        const historyData = {
           username,
           question: userInput,
-          answer: answerContent,
-        });
+          answer: Array.isArray(answerContent)
+            ? answerContent
+            : [answerContent],
+        };
+        localStorage.setItem("historyData", JSON.stringify(historyData));
+
+        const responseHistory = await axios.post(
+          "http://localhost:8080/api/history",
+          historyData
+        );
+        console.log("Response from backend:", responseHistory.data);
       } else {
         console.error("Error: ", response.statusText);
       }
     } catch (error) {
       console.error("Error: ", error.message);
+      setIsLoading(false);
     }
   };
 
@@ -106,14 +120,16 @@ const AiChat = () => {
 
   const chatStripe = (isAi, value, uniqueId) => {
     return (
-      <div key={uniqueId} className={`wrapper ${isAi ? "ai" : "user"}`}>
+      <div
+        key={uniqueId}
+        id={uniqueId}
+        className={`wrapper ${isAi ? "ai" : "user"}`}
+      >
         <div className="chat">
           <div className="profile">
-            <img src={isAi ? bot : user} alt={isAi ? "bot" : "user"} />
+            <img src={!isAi ? bot : user} alt={isAi ? "bot" : "user"} />
           </div>
-          <div className="message" id={uniqueId}>
-            {value}
-          </div>
+          <div className="message">{value}</div>
         </div>
       </div>
     );
@@ -169,6 +185,119 @@ const AiChat = () => {
           const uniqueId = generateUniqueId();
           return chatStripe(message.isUser, message.content, uniqueId);
         })}
+
+        {isLoading && (
+          <Box
+            sx={{
+              width: 500,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "flex-start",
+              marginLeft: "30px",
+              marginTop: "10px",
+            }}
+          >
+            <Skeleton
+              variant="text"
+              animation="wave"
+              width={500}
+              height={20}
+              sx={{
+                borderRadius: "4px",
+                backgroundSize: "600% 600%",
+                animation: "skeletonGradient 4s infinite alternate",
+              }}
+            />
+            <Skeleton
+              variant="text"
+              animation="wave"
+              width={500}
+              height={20}
+              sx={{
+                borderRadius: "4px",
+                backgroundSize: "600% 600%",
+                animation: "skeletonGradient 4s infinite alternate",
+              }}
+            />
+            <Skeleton
+              variant="text"
+              animation="wave"
+              width={500}
+              height={20}
+              sx={{
+                borderRadius: "4px",
+                backgroundSize: "600% 600%",
+                animation: "skeletonGradient 4s infinite alternate",
+              }}
+            />
+            <Skeleton
+              variant="text"
+              animation="wave"
+              width={500}
+              height={20}
+              sx={{
+                borderRadius: "4px",
+                backgroundSize: "600% 600%",
+                animation: "skeletonGradient 4s infinite alternate",
+              }}
+            />
+            <Skeleton
+              variant="text"
+              animation="wave"
+              width={500}
+              height={20}
+              sx={{
+                borderRadius: "4px",
+                backgroundSize: "600% 600%",
+                animation: "skeletonGradient 4s infinite alternate",
+              }}
+            />
+            <Skeleton
+              variant="text"
+              animation="wave"
+              width={500}
+              height={20}
+              sx={{
+                borderRadius: "4px",
+                backgroundSize: "600% 600%",
+                animation: "skeletonGradient 4s infinite alternate",
+              }}
+            />
+            <Skeleton
+              variant="text"
+              animation="wave"
+              width={500}
+              height={20}
+              sx={{
+                borderRadius: "4px",
+                backgroundSize: "600% 600%",
+                animation: "skeletonGradient 4s infinite alternate",
+              }}
+            />
+            <Skeleton
+              variant="text"
+              animation="wave"
+              width={500}
+              height={20}
+              sx={{
+                borderRadius: "4px",
+                backgroundSize: "600% 600%",
+                animation: "skeletonGradient 4s infinite alternate",
+              }}
+            />
+            <Skeleton
+              variant="text"
+              animation="wave"
+              width={500}
+              height={20}
+              sx={{
+                borderRadius: "4px",
+                backgroundSize: "600% 600%",
+                animation: "skeletonGradient 4s infinite alternate",
+              }}
+            />
+          </Box>
+        )}
       </div>
       <form onSubmit={handleFormSubmit}>
         <textarea

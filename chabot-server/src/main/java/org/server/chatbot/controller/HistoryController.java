@@ -16,6 +16,7 @@ public class HistoryController {
 
     @PostMapping("/history")
     public History saveHistory(@RequestBody History request) {
+        System.out.println("Request from frontend: " + request);
         return historyService.saveHistory(request.getUsername(), request.getQuestion(), request.getAnswer());
     }
 

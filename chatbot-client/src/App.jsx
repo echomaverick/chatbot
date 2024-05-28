@@ -49,7 +49,16 @@ const App = () => {
               isAuthenticated() ? <AiChat /> : <Navigate to="/login" replace />
             }
           />
-          <Route path="/" element={<Navigate to="/ai" />} />
+          <Route
+            path="/*"
+            element={
+              isAuthenticated() ? (
+                <Navigate to="/ai" replace />
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
         </Routes>
       </div>
     </Router>
