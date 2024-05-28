@@ -1,0 +1,49 @@
+h1 {
+  text-align: center;
+  color: white;
+}
+
+#history {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+.history-card {
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  width: 300px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.history-card:hover {
+  transform: scale(1.05);
+}
+
+.history-card h3 {
+  margin-top: 0;
+  color: black;
+}
+
+.history-detail {
+  max-width: 600px;
+  margin: 50px 400px; 
+  padding: 20px;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.bot-message {
+  color: green;
+  margin: 10px 0 0;
+}
+.title{
+    color: black;
+}
