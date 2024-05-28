@@ -1,8 +1,8 @@
-# AI Chatbot
+# InsightAI
 
 ## Description
 
-AI Chatbot is a conversational agent powered by artificial intelligence. It is capable of understanding natural language input, providing responses, and engaging in meaningful conversations with users on a variety of topics.
+InsightAI is a conversational agent powered by artificial intelligence. It is capable of understanding natural language input, providing responses, and engaging in meaningful conversations with users on a variety of topics.
 
 ## Features
 
@@ -16,21 +16,42 @@ AI Chatbot is a conversational agent powered by artificial intelligence. It is c
 1. **Clone the Repository:**
 
     ```bash
-    git clone https://github.com/echomaverick/chatbot-java.git
+    git clone https://github.com/echomaverick/chatbot.git
     ```
 
 2. **Install Dependencies:**
 
     ```bash
-    cd your-repository
+    cd chatbot
+    cd chatbot-server
     mvn install
     ```
 
-3. **Configuration:**
+3. **Setup Frontend:**
+
+    - Navigate to the client directory:
+
+        ```bash
+        cd chatbot-client
+        ```
+
+    - Install Node.js dependencies:
+
+        ```bash
+        npm install
+        ```
+
+    - Run Vite for the frontend:
+
+        ```bash
+        npm run dev
+        ```
+
+4. **Configuration:**
     - Create a `.env` file in the root directory and add your project configuration details. Include variables such as `PROJECT_ID`, `LOCATION`, and `MODEL_NAME`.
     - Update any necessary configuration variables in the application properties or code.
 
-4. **Run the Application:**
+5. **Run the Application:**
 
     ```bash
     mvn spring-boot:run
