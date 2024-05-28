@@ -7,6 +7,7 @@ import send from "../assets/send.svg";
 import "../styles/ai.css";
 import Box from "@mui/material/Box";
 import Skeleton from "@mui/material/Skeleton";
+import "../styles/skeleton.css";
 
 const AiChat = () => {
   const navigate = useNavigate();
@@ -187,116 +188,11 @@ const AiChat = () => {
         })}
 
         {isLoading && (
-          <Box
-            sx={{
-              width: 500,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-start",
-              marginLeft: "30px",
-              marginTop: "10px",
-            }}
-          >
-            <Skeleton
-              variant="text"
-              animation="wave"
-              width={500}
-              height={20}
-              sx={{
-                borderRadius: "4px",
-                backgroundSize: "600% 600%",
-                animation: "skeletonGradient 4s infinite alternate",
-              }}
-            />
-            <Skeleton
-              variant="text"
-              animation="wave"
-              width={500}
-              height={20}
-              sx={{
-                borderRadius: "4px",
-                backgroundSize: "600% 600%",
-                animation: "skeletonGradient 4s infinite alternate",
-              }}
-            />
-            <Skeleton
-              variant="text"
-              animation="wave"
-              width={500}
-              height={20}
-              sx={{
-                borderRadius: "4px",
-                backgroundSize: "600% 600%",
-                animation: "skeletonGradient 4s infinite alternate",
-              }}
-            />
-            <Skeleton
-              variant="text"
-              animation="wave"
-              width={500}
-              height={20}
-              sx={{
-                borderRadius: "4px",
-                backgroundSize: "600% 600%",
-                animation: "skeletonGradient 4s infinite alternate",
-              }}
-            />
-            <Skeleton
-              variant="text"
-              animation="wave"
-              width={500}
-              height={20}
-              sx={{
-                borderRadius: "4px",
-                backgroundSize: "600% 600%",
-                animation: "skeletonGradient 4s infinite alternate",
-              }}
-            />
-            <Skeleton
-              variant="text"
-              animation="wave"
-              width={500}
-              height={20}
-              sx={{
-                borderRadius: "4px",
-                backgroundSize: "600% 600%",
-                animation: "skeletonGradient 4s infinite alternate",
-              }}
-            />
-            <Skeleton
-              variant="text"
-              animation="wave"
-              width={500}
-              height={20}
-              sx={{
-                borderRadius: "4px",
-                backgroundSize: "600% 600%",
-                animation: "skeletonGradient 4s infinite alternate",
-              }}
-            />
-            <Skeleton
-              variant="text"
-              animation="wave"
-              width={500}
-              height={20}
-              sx={{
-                borderRadius: "4px",
-                backgroundSize: "600% 600%",
-                animation: "skeletonGradient 4s infinite alternate",
-              }}
-            />
-            <Skeleton
-              variant="text"
-              animation="wave"
-              width={500}
-              height={20}
-              sx={{
-                borderRadius: "4px",
-                backgroundSize: "600% 600%",
-                animation: "skeletonGradient 4s infinite alternate",
-              }}
-            />
-          </Box>
+          <div id="skeleton-loader" className="skeleton-loader">
+            <div className="skeleton-line"></div>
+            <div className="skeleton-line"></div>
+            <div className="skeleton-line"></div>
+          </div>
         )}
       </div>
       <form onSubmit={handleFormSubmit}>
