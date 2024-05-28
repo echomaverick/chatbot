@@ -11,21 +11,26 @@ import java.util.List;
 @RequestMapping("/api")
 public class HistoryController {
 
-	@Autowired
-	private HistoryService historyService;
+    @Autowired
+    private HistoryService historyService;
 
-	@PostMapping("/save-history")
-	public History saveHistory(@RequestBody History request) {
-		return historyService.saveHistory(request.getUsername() , request.getQuestion() , request.getAnswer());
-	}
+    @PostMapping("/history")
+    public History saveHistory(@RequestBody History request) {
+        return historyService.saveHistory(request.getUsername(), request.getQuestion(), request.getAnswer());
+    }
 
-	@GetMapping("/history")
-	public List<History> getHistory() {
-		return historyService.getAllHistory();
-	}
+    @GetMapping("/history")
+    public List<History> getAllHistory() {
+        return historyService.getAllHistory();
+    }
 
-	@GetMapping("/history-by-username/{username}")
-	public List<History> getHistoryByUsername(@PathVariable String username) {
-		return historyService.getHistoryByUsername(username);
-	}
+    @GetMapping("/history/username/{username}")
+    public List<History> getHistoryByUsername(@PathVariable String username) {
+        return historyService.getHistoryByIdsByUsername(username);
+    }
+
+    @GetMapping("/history/{id}")
+    public History getHistoryById(@PathVariable String id) {
+        return historyService.getHistoryById(id);
+    }
 }

@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class HistoryService {
@@ -34,11 +36,19 @@ public class HistoryService {
 		return historyRepository.findAll();
 	}
 
-	public List<History> getHistoryByUsername(String username) {
+	public List<History> getHistoryByIdsByUsername(String username) {
 		if (userRepository.existsByUsername(username)) {
 			return historyRepository.findByUsername(username);
 		} else {
 			throw new RuntimeException("User not found");
+		}
+	}
+	public History getHistoryById(String id) {
+		Optional<History> history = historyRepository.findById(id);
+		if (history.isPresent()) {
+			return history.get();
+		} else {
+			throw new RuntimeException("History not found");
 		}
 	}
 }
