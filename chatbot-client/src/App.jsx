@@ -44,7 +44,7 @@ const App = () => {
             }
           />
           <Route
-            path="/ai"
+            path="/"
             element={
               isAuthenticated() ? <AiChat /> : <Navigate to="/login" replace />
             }
