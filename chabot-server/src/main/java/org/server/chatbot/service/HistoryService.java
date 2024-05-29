@@ -76,5 +76,12 @@ public class HistoryService {
 			throw new RuntimeException("History not found");
 		}
 	}
+
+	public void deleteHistoryByUsernameAndId(String username, String id) {
+        if (!userRepository.existsByUsername(username)) {
+            throw new IllegalArgumentException("User not found");
+        }
+        historyRepository.deleteByUsernameAndId(username, id);
+    }
 }
 

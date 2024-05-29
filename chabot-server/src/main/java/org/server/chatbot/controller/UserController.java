@@ -3,6 +3,7 @@ package org.server.chatbot.controller;
 import org.server.chatbot.models.User;
 import org.server.chatbot.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,4 +18,9 @@ public class UserController {
 		System.out.println("Received registration request for user: " + user.getUsername());
 		return userService.createUser(user);
 	}
+	@DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable String id) {
+        userService.deleteUser(id);
+        return ResponseEntity.noContent().build();
+    }
 }

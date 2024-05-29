@@ -4,6 +4,7 @@ import org.server.chatbot.models.History;
 import org.server.chatbot.models.QuestionAnswerPair;
 import org.server.chatbot.service.HistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -40,4 +41,9 @@ public class HistoryController {
 	public History getHistoryById(@PathVariable String id) {
 		return historyService.getHistoryById(id);
 	}
+	 @DeleteMapping("/history/delete/{username}/{id}")
+    public ResponseEntity<Void> deleteHistoryForUser(@PathVariable String username, @PathVariable String id) {
+        historyService.deleteHistoryByUsernameAndId(username, id);
+        return ResponseEntity.noContent().build();
+    }
 }
