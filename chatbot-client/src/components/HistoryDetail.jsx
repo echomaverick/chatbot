@@ -29,12 +29,15 @@ const HistoryDetail = () => {
   if (!history) {
     return <p>Loading...</p>;
   }
-  const answerText = history.answer.join(" ");
 
   return (
     <div className="history-detail">
-      <h1 className="title">{history.question}</h1>
-      <p className="bot-message">{answerText}</p>
+      {history.questionAnswerPairs.map((pair, index) => (
+        <div key={index}>
+          <h1 className="title">{pair.question}</h1>
+          <p className="bot-message">{pair.answer.join(" ")}</p>
+        </div>
+      ))}
     </div>
   );
 };

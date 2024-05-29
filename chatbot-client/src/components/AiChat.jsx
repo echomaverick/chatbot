@@ -5,9 +5,16 @@ import bot from "../assets/bot.svg";
 import user from "../assets/user.svg";
 import send from "../assets/send.svg";
 import "../styles/ai.css";
-import Box from "@mui/material/Box";
-import Skeleton from "@mui/material/Skeleton";
 import "../styles/skeleton.css";
+import "../styles/menu.css";
+import ChatHistory from "./ChatHistory";
+
+const generateSessionId = () => {
+  const timestamp = Date.now();
+  const randomNumber = Math.random();
+  const hexadecimalString = randomNumber.toString(16);
+  return `id-${timestamp}-${hexadecimalString}`;
+};
 
 const AiChat = () => {
   const navigate = useNavigate();
@@ -15,6 +22,8 @@ const AiChat = () => {
   const [userInput, setUserInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const chatContainerRef = useRef(null);
+  const [sessionId, setSessionId] = useState(generateSessionId());
+  const [showSidebar, setShowSidebar] = useState(false);
 
   useEffect(() => {
     if (!isAuthenticated()) {
@@ -52,10 +61,11 @@ const AiChat = () => {
     setUserInput("");
 
     try {
-      const uniqueId = generateUniqueId();
-      const loaderInterval = loader(uniqueId);
+      const loaderInterval = loader();
 
       const response = await axios.post("http://localhost:8080/api/ask", {
+        sessionId: sessionId,
+        username: getUsernameFromToken(),
         question: userInput,
       });
 
@@ -74,15 +84,18 @@ const AiChat = () => {
 
         setChatMessages((prevMessages) => [...prevMessages, answerMessage]);
 
-        const username = getUsernameFromToken();
         const historyData = {
-          username,
-          question: userInput,
-          answer: Array.isArray(answerContent)
-            ? answerContent
-            : [answerContent],
+          sessionId: sessionId,
+          username: getUsernameFromToken(),
+          questionAnswerPairs: [
+            {
+              question: userInput,
+              answer: Array.isArray(answerContent)
+                ? answerContent
+                : [answerContent],
+            },
+          ],
         };
-        localStorage.setItem("historyData", JSON.stringify(historyData));
 
         const responseHistory = await axios.post(
           "http://localhost:8080/api/history",
@@ -112,32 +125,8 @@ const AiChat = () => {
     scrollToBottom();
   }, [chatMessages]);
 
-  const generateUniqueId = () => {
-    const timestamp = Date.now();
-    const randomNumber = Math.random();
-    const hexadecimalString = randomNumber.toString(16);
-    return `id-${timestamp}-${hexadecimalString}`;
-  };
-
-  const chatStripe = (isAi, value, uniqueId) => {
-    return (
-      <div
-        key={uniqueId}
-        id={uniqueId}
-        className={`wrapper ${isAi ? "ai" : "user"}`}
-      >
-        <div className="chat">
-          <div className="profile">
-            <img src={!isAi ? bot : user} alt={isAi ? "bot" : "user"} />
-          </div>
-          <div className="message">{value}</div>
-        </div>
-      </div>
-    );
-  };
-
-  const loader = (uniqueId) => {
-    const messageDiv = document.getElementById(uniqueId);
+  const loader = () => {
+    const messageDiv = document.getElementById("loader");
     if (!messageDiv) return;
     messageDiv.textContent = "";
     let counter = 0;
@@ -179,39 +168,66 @@ const AiChat = () => {
     return null;
   };
 
-  return (
-    <div id="app">
-      <div id="chat_container" ref={chatContainerRef}>
-        {chatMessages.map((message, index) => {
-          const uniqueId = generateUniqueId();
-          return chatStripe(message.isUser, message.content, uniqueId);
-        })}
+  const handleToggleSidebar = () => {
+    setShowSidebar((state) => !state);
+  };
 
-        {isLoading && (
-          <div id="skeleton-loader" className="skeleton-loader">
-            <div className="skeleton-line"></div>
-            <div className="skeleton-line"></div>
-            <div className="skeleton-line"></div>
-          </div>
+  return (
+    <div className="sideb-bar-container">
+      <div className="sidebar" style={{width: 250}}>
+        {!showSidebar && (
+          <ChatHistory
+            sessionId={sessionId}
+            username={getUsernameFromToken()}
+            navigate={navigate}
+          />
         )}
       </div>
-      <form onSubmit={handleFormSubmit}>
-        <textarea
-          name="prompt"
-          rows="1"
-          cols="1"
-          placeholder="Ask InsightAi..."
-          value={userInput}
-          onChange={(e) => setUserInput(e.target.value)}
-          onKeyUp={handleKeyUp}
-        ></textarea>
-        <button type="submit">
-          <img src={send} alt="Send" />
-        </button>
-      </form>
-      <p className="info-text">
-        InsightAi can make mistakes. Check important info.
-      </p>
+      <div id="app" className="main-content">
+        <div
+          id="chat_container"
+          ref={chatContainerRef}
+          style={{ flex: 1, overflowY: "auto" }}
+        >
+          {chatMessages.map((message, index) => (
+            <div
+              key={index}
+              className={`wrapper ${!message.isUser ? "ai" : "user"}`}
+            >
+              <div className="chat">
+                <div className="profile">
+                  <img src={!message.isUser ? bot : user} alt="bot" />
+                </div>
+                <div className="message">{message.content}</div>
+              </div>
+            </div>
+          ))}
+          {isLoading && (
+            <div id="skeleton-loader" className="skeleton-loader">
+              <div className="skeleton-line"></div>
+              <div className="skeleton-line"></div>
+              <div className="skeleton-line"></div>
+            </div>
+          )}
+        </div>
+        <form onSubmit={handleFormSubmit}>
+          <textarea
+            name="prompt"
+            rows="1"
+            cols="1"
+            placeholder="Ask InsightAi..."
+            value={userInput}
+            onChange={(e) => setUserInput(e.target.value)}
+            onKeyUp={handleKeyUp}
+          ></textarea>
+          <button type="submit">
+            <img src={send} alt="Send" />
+          </button>
+        </form>
+        <p className="info-text">
+          InsightAi can make mistakes. Check important info.
+        </p>
+      </div>
     </div>
   );
 };

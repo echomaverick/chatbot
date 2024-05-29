@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/history.css";
 
-const ChatCard = ({ history }) => {
+const ChatCard = ({ historyName, history }) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
@@ -12,7 +12,7 @@ const ChatCard = ({ history }) => {
 
   return (
     <div className="history-card" onClick={handleClick}>
-      <h3>{history.question}</h3>
+      <h3 className="history_name" style={{color: "white", fontSize: 15}}>{historyName}</h3>
     </div>
   );
 };

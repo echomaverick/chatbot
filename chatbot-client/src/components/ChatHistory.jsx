@@ -32,14 +32,30 @@ const ChatHistory = () => {
     };
 
     fetchChatHistory();
+
+    const intervalId = setInterval(fetchChatHistory, 10000);
+    return () => clearInterval(intervalId);
   }, []);
+
+  console.log("History data:", historyData);
 
   return (
     <div>
-      <h1>Chat History for {username}</h1>
+      <h1 className="history_chat_name" style={{ fontSize: 20 }}>
+        History
+      </h1>
       <div id="history">
         {historyData.map((history, index) => (
-          <ChatCard key={index} history={history} />
+          <ChatCard
+            key={index}
+            history={history}
+            historyName={
+              history.questionAnswerPairs &&
+              history.questionAnswerPairs.length > 0
+                ? history.questionAnswerPairs[0].question
+                : ""
+            }
+          />
         ))}
       </div>
     </div>

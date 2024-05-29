@@ -10,4 +10,6 @@ public interface HistoryRepository extends MongoRepository<History, String> {
 	List<History> findByUsername(String username);
 
 	Optional<History> findById(String id);
+
+	History findBySessionId(String sessionId);
 }
