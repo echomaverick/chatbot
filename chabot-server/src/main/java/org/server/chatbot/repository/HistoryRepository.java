@@ -14,4 +14,6 @@ public interface HistoryRepository extends MongoRepository<History, String> {
 	History findBySessionId(String sessionId);
 
 	void deleteByUsernameAndId(String username , String id);
+
+	void deleteByUsername(String username);
 }

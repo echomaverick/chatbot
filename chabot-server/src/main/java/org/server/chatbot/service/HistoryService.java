@@ -83,5 +83,12 @@ public class HistoryService {
         }
         historyRepository.deleteByUsernameAndId(username, id);
     }
+
+	public void deleteHistoryByUsername(String username) {
+		if (!userRepository.existsByUsername(username)) {
+			throw new IllegalArgumentException("User not found");
+		}
+		historyRepository.deleteByUsername(username);
+	}
 }
 

@@ -41,9 +41,16 @@ public class HistoryController {
 	public History getHistoryById(@PathVariable String id) {
 		return historyService.getHistoryById(id);
 	}
+
 	 @DeleteMapping("/history/delete/{username}/{id}")
     public ResponseEntity<Void> deleteHistoryForUser(@PathVariable String username, @PathVariable String id) {
         historyService.deleteHistoryByUsernameAndId(username, id);
         return ResponseEntity.noContent().build();
     }
+
+	@DeleteMapping("/history/delete/{username}")
+	public ResponseEntity<Void> deleteHistory(@PathVariable String username) {
+		historyService.deleteHistoryByUsername(username);
+		return ResponseEntity.noContent().build();
+	}
 }

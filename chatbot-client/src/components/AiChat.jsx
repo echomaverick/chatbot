@@ -62,48 +62,70 @@ const AiChat = () => {
 
     try {
       const loaderInterval = loader();
+      try {
+        await axios.get("http://localhost:8080/api/ping");
+      } catch (error) {
+        setIsLoading(false);
+        const errorMessage = "Error: Check your internet connection.";
+        setTimeout(() => {
+          const errorResponse = {
+            content: errorMessage,
+            isUser: false,
+          };
+          setChatMessages((prevMessages) => [...prevMessages, errorResponse]);
+          setIsLoading(false);
+        }, 5000);
+        return;
+      }
 
-      const response = await axios.post("http://localhost:8080/api/ask", {
-        sessionId: sessionId,
-        username: getUsernameFromToken(),
-        question: userInput,
-      });
-
-      setIsLoading(false);
-
-      clearInterval(loaderInterval);
-
-      if (response.status === 200) {
-        const responseData = response.data;
-        const answerContent = responseData.answer.map((a) => a.content);
-
-        const answerMessage = {
-          content: answerContent.join("\n"),
-          isUser: false,
-        };
-
-        setChatMessages((prevMessages) => [...prevMessages, answerMessage]);
-
-        const historyData = {
+      let response;
+      try {
+        response = await axios.post("http://localhost:8080/api/ask", {
           sessionId: sessionId,
           username: getUsernameFromToken(),
-          questionAnswerPairs: [
-            {
-              question: userInput,
-              answer: Array.isArray(answerContent)
-                ? answerContent
-                : [answerContent],
-            },
-          ],
-        };
+          question: userInput,
+        });
 
-        const responseHistory = await axios.post(
-          "http://localhost:8080/api/history",
-          historyData
-        );
-      } else {
-        console.error("Error: ", response.statusText);
+        if (response.status === 200) {
+          const responseData = response.data;
+          const answerContent = responseData.answer.map((a) => a.content);
+
+          const answerMessage = {
+            content: answerContent.join("\n"),
+            isUser: false,
+          };
+
+          setChatMessages((prevMessages) => [...prevMessages, answerMessage]);
+
+          const historyData = {
+            sessionId: sessionId,
+            username: getUsernameFromToken(),
+            questionAnswerPairs: [
+              {
+                question: userInput,
+                answer: Array.isArray(answerContent)
+                  ? answerContent
+                  : [answerContent],
+              },
+            ],
+          };
+
+          await axios.post("http://localhost:8080/api/history", historyData);
+        } else {
+          console.error("Error: ", response.statusText);
+        }
+      } catch (error) {
+        console.error("Error: ", error.message);
+        const errorMessage = "Error: Something went wrong.";
+        const errorResponse = {
+          content: errorMessage,
+          isUser: false,
+        };
+        setChatMessages((prevMessages) => [...prevMessages, errorResponse]);
       }
+
+      setIsLoading(false);
+      clearInterval(loaderInterval);
     } catch (error) {
       console.error("Error: ", error.message);
       setIsLoading(false);
@@ -165,10 +187,6 @@ const AiChat = () => {
       }
     }
     return null;
-  };
-
-  const handleToggleSidebar = () => {
-    setShowSidebar((state) => !state);
   };
 
   return (
