@@ -10,6 +10,7 @@ const Register = () => {
     username: "",
     password: "",
   });
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -33,7 +34,15 @@ const Register = () => {
       }
     } catch (error) {
       console.error("Error registering user:", error);
-      alert("Error: " + error.message);
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        setError(error.response.data.message);
+      } else {
+        setError("An unexpected error occurred. Please try again later.");
+      }
     }
   };
 
@@ -44,6 +53,8 @@ const Register = () => {
           <h1 className="regTitle">Register</h1>
           <p className="fill">Please fill in this form to create an account.</p>
           <hr />
+
+          {error && <p className="error-message">{error}</p>}
 
           <label htmlFor="name">
             <b>Name</b>

@@ -101,7 +101,6 @@ const AiChat = () => {
           "http://localhost:8080/api/history",
           historyData
         );
-        console.log("Response from backend:", responseHistory.data);
       } else {
         console.error("Error: ", response.statusText);
       }
@@ -174,7 +173,7 @@ const AiChat = () => {
 
   return (
     <div className="sideb-bar-container">
-      <div className="sidebar" style={{width: 250}}>
+      <div className="sidebar" style={{ width: 250 }}>
         {!showSidebar && (
           <ChatHistory
             sessionId={sessionId}

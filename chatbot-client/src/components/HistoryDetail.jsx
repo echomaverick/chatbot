@@ -6,6 +6,7 @@ import "../styles/history.css";
 const HistoryDetail = () => {
   const { id } = useParams();
   const [history, setHistory] = useState(null);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     const fetchHistoryDetail = async () => {
@@ -15,16 +16,30 @@ const HistoryDetail = () => {
         );
         if (response.status === 200) {
           setHistory(response.data);
+          setError(false);
         } else {
           console.error("Failed to fetch history details.");
+          setError(true);
         }
       } catch (error) {
         console.error("Error fetching history details:", error);
+        setError(true);
       }
     };
 
     fetchHistoryDetail();
   }, [id]);
+
+  if (error) {
+    return (
+      <div
+        className="error-message"
+        style={{ color: "red", textAlign: "center", marginTop: "50px" }}
+      >
+        Something went wrong. Please try again later.
+      </div>
+    );
+  }
 
   if (!history) {
     return <p>Loading...</p>;

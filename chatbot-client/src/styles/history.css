@@ -8,18 +8,17 @@ h1 {
   flex-wrap: wrap;
   justify-content: center;
   max-width: 200px;
+  margin-top: 20px;
 }
 
 .history-card {
   border-radius: 8px;
   height: 50px;
-  padding: 5px;
   cursor: pointer;
   align-items: center;
   display: flex;
   justify-content: center;
   color: white;
-  margin-top: 50px;
 }
 
 .history_name{

@@ -1,9 +1,10 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/login.css";
 
 const LoginScript = () => {
   const navigate = useNavigate();
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const checkTokenExpiration = () => {
@@ -42,17 +43,18 @@ const LoginScript = () => {
         },
         body: JSON.stringify({ username, password }),
       });
-      console.log("Response:", response);
 
       if (response.ok) {
         const token = await response.text();
         localStorage.setItem("token", token);
         navigate("/ai");
       } else {
-        console.error("Login failed:", response.statusText);
+        const errorMessage = await response.text();
+        setError(errorMessage);
       }
     } catch (error) {
       console.error("Error:", error.message);
+      setError("An unexpected error occurred. Please try again later.");
     }
   };
 
@@ -64,6 +66,8 @@ const LoginScript = () => {
           Please fill in this form to login to your account.
         </p>
         <hr />
+
+        {error && <p className="error-message">{error}</p>}
 
         <label htmlFor="username">
           <b>Username</b>
