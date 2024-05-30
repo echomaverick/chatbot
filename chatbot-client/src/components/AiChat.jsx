@@ -8,6 +8,10 @@ import "../styles/ai.css";
 import "../styles/skeleton.css";
 import "../styles/menu.css";
 import ChatHistory from "./ChatHistory";
+import Dropdown from "react-bootstrap/Dropdown";
+import Button from "react-bootstrap/Button";
+
+import Modal from "react-bootstrap/Modal";
 
 const generateSessionId = () => {
   const timestamp = Date.now();
@@ -24,6 +28,8 @@ const AiChat = () => {
   const chatContainerRef = useRef(null);
   const [sessionId, setSessionId] = useState(generateSessionId());
   const [showSidebar, setShowSidebar] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     if (!isAuthenticated()) {
@@ -189,6 +195,37 @@ const AiChat = () => {
     return null;
   };
 
+  const handleUserIconClick = () => {
+    console.log("User icon clicked");
+    setShowDropdown(!showDropdown);
+  };
+
+  const handleOutsideClick = (e) => {
+    if (!e.target.closest(".user-drop")) {
+      setShowDropdown(false);
+    }
+  };
+
+  useEffect(() => {
+    if (showDropdown) {
+      document.addEventListener("click", handleOutsideClick);
+    } else {
+      document.removeEventListener("click", handleOutsideClick);
+    }
+
+    return () => {
+      document.removeEventListener("click", handleOutsideClick);
+    };
+  }, [showDropdown]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/login");
+  };
+
+  const handleShowModal = () => setShowModal(true);
+  const handleCloseModal = () => setShowModal(false);
+
   return (
     <div className="sideb-bar-container">
       <div className="sidebar" style={{ width: 250 }}>
@@ -201,6 +238,32 @@ const AiChat = () => {
         )}
       </div>
       <div id="app" className="main-content">
+        <div className="user-drop">
+          <Dropdown>
+            <Dropdown.Toggle className="dropd" id="dropdown-basic">
+              Menu
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+              <Dropdown.Item href="#/action-1">Profile</Dropdown.Item>
+              <Dropdown.Item onClick={handleShowModal}>Settings</Dropdown.Item>
+              <Dropdown.Item onClick={handleLogout}>Logout</Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
+          <Modal show={showModal} onHide={handleCloseModal}>
+            <Modal.Header closeButton>
+              <Modal.Title>Confirm Deletion</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              Are you sure you want to delete your chat history?
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="secondary" onClick={handleCloseModal}>
+                Cancel
+              </Button>
+              <Button variant="danger">Delete</Button>
+            </Modal.Footer>
+          </Modal>
+        </div>
         <div
           id="chat_container"
           ref={chatContainerRef}

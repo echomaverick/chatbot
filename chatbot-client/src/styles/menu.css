@@ -1,9 +1,22 @@
-.sideb-bar-container{
-    display: flex;
+.sideb-bar-container {
+  display: flex;
 }
-.sidebar{
-    background-color: #171717;
-    text-align: center;
-    color: white;
-    max-width: 200px;
+.sidebar {
+  background-color: #171717;
+  text-align: center;
+  color: white;
+  max-width: 200px;
+}
+
+.dropd {
+  position: fixed;
+  left: 90%;
+  top: 15px;
+  transform: translateY(-50%);
+  background-color: white;
+  color: black;
+  border: none;
+  border-radius: 10px;
+  margin-top: 5px;
+  z-index: 999;
 }

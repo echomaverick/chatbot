@@ -1,14 +1,18 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import ChatCard from "./ChatCard";
+import Button from "react-bootstrap/Button";
+import Modal from "react-bootstrap/Modal";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 const CHAT_HISTORY_KEY = "chat_history";
 const FETCH_TIMEOUT = 5000;
-
 const ChatHistory = () => {
   const [historyData, setHistoryData] = useState([]);
   const [isFetching, setIsFetching] = useState(false);
   const [error, setError] = useState("");
+  const [showModal, setShowModal] = useState(false);
+  const [timeoutErrorLogged, setTimeoutErrorLogged] = useState(false);
 
   useEffect(() => {
     const fetchChatHistory = async () => {
@@ -41,9 +45,16 @@ const ChatHistory = () => {
       }
     };
 
+    const timeoutId = setTimeout(() => {
+      if (isFetching) {
+        console.error("Network error: Chat history retrieval timed out.");
+        setIsFetching(false);
+        setTimeoutErrorLogged(true);
+      }
+    }, FETCH_TIMEOUT);
+
     fetchChatHistory();
 
-    const timeoutId = setTimeout(fetchChatHistory, 10000);
     return () => {
       clearTimeout(timeoutId);
       setIsFetching(false);
@@ -66,6 +77,7 @@ const ChatHistory = () => {
       if (response.status === 204) {
         setHistoryData([]);
         localStorage.removeItem(CHAT_HISTORY_KEY);
+        setShowModal(false);
       } else {
         setError("Failed to delete chat history. Please try again later.");
       }
@@ -74,6 +86,9 @@ const ChatHistory = () => {
       setError("Error deleting chat history. Please try again later.");
     }
   };
+
+  const handleShowModal = () => setShowModal(true);
+  const handleCloseModal = () => setShowModal(false);
 
   return (
     <div style={{ paddingBottom: "50px" }}>
@@ -96,17 +111,11 @@ const ChatHistory = () => {
             />
           ))}
         {isFetching &&
-          setTimeout(() => {
-            if (isFetching) {
-              console.error("Network error: Chat history retrieval timed out.");
-              setIsFetching(false);
-            }
-          }, FETCH_TIMEOUT)}
+          !timeoutErrorLogged &&
+          console.error("Network error: Chat history retrieval timed out.")}
       </div>
-      <button
-        onClick={handleDeleteHistory}
+      <Button
         style={{
-          backgroundColor: "red",
           padding: 10,
           borderRadius: 20,
           position: "fixed",
@@ -114,9 +123,27 @@ const ChatHistory = () => {
           transform: "translateX(-50%)",
           zIndex: "1000",
         }}
+        variant="danger"
+        onClick={handleShowModal}
       >
         Delete History
-      </button>
+      </Button>
+      <Modal show={showModal} onHide={handleCloseModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirm Deletion</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Are you sure you want to delete your chat history?
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseModal}>
+            Cancel
+          </Button>
+          <Button variant="danger" onClick={handleDeleteHistory}>
+            Delete
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };
