@@ -6,7 +6,9 @@ import Modal from "react-bootstrap/Modal";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 const CHAT_HISTORY_KEY = "chat_history";
-const FETCH_TIMEOUT = 5000;
+const FETCH_TIMEOUT = 60000;
+const FETCH_INTERVAL = 60000;
+
 const ChatHistory = () => {
   const [historyData, setHistoryData] = useState([]);
   const [isFetching, setIsFetching] = useState(false);
@@ -14,49 +16,68 @@ const ChatHistory = () => {
   const [showModal, setShowModal] = useState(false);
   const [timeoutErrorLogged, setTimeoutErrorLogged] = useState(false);
 
-  useEffect(() => {
-    const fetchChatHistory = async () => {
-      setIsFetching(true);
-      setError("");
+  const fetchChatHistory = async () => {
+    setIsFetching(true);
+    setError("");
 
-      try {
-        const token = localStorage.getItem("token");
-        if (!token) {
-          throw new Error("Token not found");
-        }
-        const decodedToken = JSON.parse(atob(token.split(".")[1]));
-        const username = decodedToken.sub;
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        throw new Error("Token not found");
+      }
+      const decodedToken = JSON.parse(atob(token.split(".")[1]));
+      const username = decodedToken.sub;
 
-        const response = await axios.get(
-          `http://localhost:8080/api/history/username/${username}`
-        );
-        if (response.status === 200) {
-          const data = response.data;
+      const response = await axios.get(
+        `http://localhost:8080/api/history/username/${username}`
+      );
+      if (response.status === 200) {
+        const data = response.data;
+        if (data.length === 0) {
+          const cachedHistory = localStorage.getItem(CHAT_HISTORY_KEY);
+          if (cachedHistory) {
+            setHistoryData(JSON.parse(cachedHistory));
+          } else {
+            setError("No chat history available.");
+          }
+        } else {
           setHistoryData(data);
           localStorage.setItem(CHAT_HISTORY_KEY, JSON.stringify(data));
-        } else {
-          setError("Failed to fetch chat history. Please try again later.");
         }
-      } catch (error) {
-        console.error("Error fetching chat history:", error.message);
+      } else {
+        setError("Failed to fetch chat history. Please try again later.");
+      }
+    } catch (error) {
+      console.error("Error fetching chat history:", error.message);
+      if (error.message === "Network Error") {
+        const cachedHistory = localStorage.getItem(CHAT_HISTORY_KEY);
+        if (cachedHistory) {
+          setHistoryData(JSON.parse(cachedHistory));
+        } else {
+          setError("Error fetching chat history. Please try again later.");
+        }
+      } else {
         setError("Error fetching chat history. Please try again later.");
-      } finally {
-        setIsFetching(false);
       }
-    };
+    } finally {
+      setIsFetching(false);
+    }
+  };
 
+  useEffect(() => {
     const timeoutId = setTimeout(() => {
-      if (isFetching) {
-        console.error("Network error: Chat history retrieval timed out.");
-        setIsFetching(false);
-        setTimeoutErrorLogged(true);
-      }
+      console.error("Network error: Chat history retrieval timed out.");
+      setIsFetching(false);
+      setError("Network error: Chat history retrieval timed out.");
     }, FETCH_TIMEOUT);
+
+    const intervalId = setInterval(fetchChatHistory, FETCH_INTERVAL);
 
     fetchChatHistory();
 
     return () => {
       clearTimeout(timeoutId);
+      clearInterval(intervalId);
       setIsFetching(false);
     };
   }, []);
@@ -92,7 +113,7 @@ const ChatHistory = () => {
 
   return (
     <div style={{ paddingBottom: "50px" }}>
-      <h1 className="history_chat_name" style={{ fontSize: 20 }}>
+      <h1 className="history_chat_name" style={{ fontSize: 20, marginTop: 10 }}>
         History
       </h1>
       <div id="history">

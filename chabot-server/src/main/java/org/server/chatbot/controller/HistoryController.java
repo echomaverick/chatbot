@@ -21,8 +21,8 @@ public class HistoryController {
 	public History saveHistory(@RequestBody History request) {
 		System.out.println("Request from frontend: " + request);
 		List<QuestionAnswerPair> questionAnswerPairs = request.getQuestionAnswerPairs();
-		List<String> questions = questionAnswerPairs.stream().map(QuestionAnswerPair::getQuestion).collect(Collectors.toList());
-		List<List<String>> answers = questionAnswerPairs.stream().map(QuestionAnswerPair::getAnswer).collect(Collectors.toList());
+		List<String> questions = questionAnswerPairs.stream().map(QuestionAnswerPair::getQuestion).toList();
+		List<List<String>> answers = questionAnswerPairs.stream().map(QuestionAnswerPair::getAnswer).toList();
 		return historyService.saveHistory(request.getSessionId() , request.getUsername() , request.getQuestionAnswerPairs());
 	}
 

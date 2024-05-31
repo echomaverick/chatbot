@@ -1,6 +1,7 @@
 package org.server.chatbot.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ public class ChatBotService {
 	}
 
 	// Method to get responses based on input
+	@Cacheable(value = "chatbotResponses", key = "#input")
 	public HashMap<String, Object> getResponses(String input) {
 		logger.info("Input received: {}" , input);
 		try {

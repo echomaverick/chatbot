@@ -22,8 +22,8 @@ const HistoryDetail = () => {
           setError(true);
         }
       } catch (error) {
-        console.error("Error fetching history details:", error);
-        setError(true);
+        console.error("Error fetching history details:", error.message);
+        setError("Network Error");
       }
     };
 

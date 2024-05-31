@@ -10,6 +10,8 @@ import "../styles/menu.css";
 import ChatHistory from "./ChatHistory";
 import Dropdown from "react-bootstrap/Dropdown";
 import Button from "react-bootstrap/Button";
+import { IoIosLogOut } from "react-icons/io";
+import { IoIosSettings } from "react-icons/io";
 
 import Modal from "react-bootstrap/Modal";
 
@@ -72,7 +74,7 @@ const AiChat = () => {
         await axios.get("http://localhost:8080/api/ping");
       } catch (error) {
         setIsLoading(false);
-        const errorMessage = "Error: Check your internet connection.";
+        const errorMessage = "Check your internet connection.";
         setTimeout(() => {
           const errorResponse = {
             content: errorMessage,
@@ -122,12 +124,30 @@ const AiChat = () => {
         }
       } catch (error) {
         console.error("Error: ", error.message);
-        const errorMessage = "Error: Something went wrong.";
-        const errorResponse = {
-          content: errorMessage,
-          isUser: false,
-        };
-        setChatMessages((prevMessages) => [...prevMessages, errorResponse]);
+        if (error.response && error.response.status === 503) {
+          const cachedResponse = await checkRedisCache(userInput);
+          if (cachedResponse) {
+            const answerMessage = {
+              content: cachedResponse,
+              isUser: false,
+            };
+            setChatMessages((prevMessages) => [...prevMessages, answerMessage]);
+          } else {
+            const errorMessage = "Please try again later.";
+            const errorResponse = {
+              content: errorMessage,
+              isUser: false,
+            };
+            setChatMessages((prevMessages) => [...prevMessages, errorResponse]);
+          }
+        } else {
+          const errorMessage = "Something went wrong.";
+          const errorResponse = {
+            content: errorMessage,
+            isUser: false,
+          };
+          setChatMessages((prevMessages) => [...prevMessages, errorResponse]);
+        }
       }
 
       setIsLoading(false);
@@ -135,6 +155,32 @@ const AiChat = () => {
     } catch (error) {
       console.error("Error: ", error.message);
       setIsLoading(false);
+    }
+  };
+
+  const checkRedisCache = async (userInput) => {
+    try {
+      const response = await axios.get(
+        "http://localhost:8080/api/redis-cache/keys"
+      );
+      const keys = response.data;
+
+      const latestKey = keys.reduce((latest, current) => {
+        const currentKey = parseInt(current.split("::")[1]);
+        return currentKey > latest ? currentKey : latest;
+      }, 0);
+
+      if (latestKey !== 0) {
+        const latestKeyResponse = await axios.get(
+          `http://localhost:8080/api/redis-cache/value/${keys[latestKey - 1]}`
+        );
+        return latestKeyResponse.data;
+      }
+
+      return null;
+    } catch (error) {
+      console.error("Error fetching from Redis cache:", error.message);
+      throw error;
     }
   };
 
@@ -168,15 +214,6 @@ const AiChat = () => {
 
     return loaderInterval;
   };
-
-  const typeText = async (messageDiv, text, typingSpeed) => {
-    for (let i = 0; i < text.length; i++) {
-      await new Promise((resolve) => setTimeout(resolve, typingSpeed));
-      messageDiv.textContent += text.charAt(i);
-      scrollToBottom();
-    }
-  };
-
   const handleFormSubmit = (e) => {
     handleSubmit(e);
   };
@@ -193,11 +230,6 @@ const AiChat = () => {
       }
     }
     return null;
-  };
-
-  const handleUserIconClick = () => {
-    console.log("User icon clicked");
-    setShowDropdown(!showDropdown);
   };
 
   const handleOutsideClick = (e) => {
@@ -244,9 +276,12 @@ const AiChat = () => {
               Menu
             </Dropdown.Toggle>
             <Dropdown.Menu>
-              <Dropdown.Item href="#/action-1">Profile</Dropdown.Item>
-              <Dropdown.Item onClick={handleShowModal}>Settings</Dropdown.Item>
-              <Dropdown.Item onClick={handleLogout}>Logout</Dropdown.Item>
+              <Dropdown.Item onClick={handleShowModal}>
+                <IoIosSettings /> Settings
+              </Dropdown.Item>
+              <Dropdown.Item onClick={handleLogout}>
+                <IoIosLogOut /> Logout
+              </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
           <Modal show={showModal} onHide={handleCloseModal}>
