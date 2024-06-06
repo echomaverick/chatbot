@@ -2,6 +2,7 @@ package org.server.chatbot.service;
 
 import org.server.chatbot.models.User;
 import org.server.chatbot.repository.UserRepository;
+import org.server.chatbot.util.JwtTokenUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

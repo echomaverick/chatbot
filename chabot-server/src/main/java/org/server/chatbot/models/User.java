@@ -11,6 +11,7 @@ public class User {
 	private String email;
 	private String password;
 	private String username;
+	private String totpSecret;
 
 	public String getId() {
 		return id;
@@ -41,5 +42,11 @@ public class User {
 	}
 	public void setUsername(String username) {
 		this.username = username;
+	}
+	public String getTotpSecret() {
+		return totpSecret;
+	}
+	public void setTotpSecret(String totpSecret) {
+		this.totpSecret = totpSecret;
 	}
 }

@@ -1,4 +1,4 @@
-package org.server.chatbot.service;
+package org.server.chatbot.util;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
