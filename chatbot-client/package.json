@@ -15,11 +15,13 @@
     "@mui/material": "^5.15.18",
     "axios": "^1.7.2",
     "bootstrap": "^5.3.3",
+    "esbuild-plugin-node-externals": "^1.0.1",
     "react": "^18.2.0",
     "react-bootstrap": "^2.10.2",
     "react-dom": "^18.2.0",
     "react-icons": "^5.2.1",
-    "react-router-dom": "^6.23.1"
+    "react-router-dom": "^6.23.1",
+    "spellchecker": "^3.7.1"
   },
   "devDependencies": {
     "@types/react": "^18.2.66",
